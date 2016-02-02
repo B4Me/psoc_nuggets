@@ -1,0 +1,12 @@
+Archive/
+Backup/
+Generated_Source/
+CortexM0/
+Export/
+codegentemp/
+*.hkj
+*.cycdx
+*.cyfit
+*.rpt
+*.svd
+*.html
