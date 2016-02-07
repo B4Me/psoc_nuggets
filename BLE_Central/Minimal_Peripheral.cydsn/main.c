@@ -15,10 +15,11 @@ void BleEventHandler(uint32 event, void *eventParam)
         case CYBLE_EVT_GATTS_WRITE_CMD_REQ:
             wrCmdReqParam = (CYBLE_GATTS_WRITE_CMD_REQ_PARAM_T *) eventParam;
             if (wrCmdReqParam->handleValPair.attrHandle == \
-                cyBle_customs[CYBLE_MYCUSTOMSERVICE_SERVICE_INDEX].\
-                customServInfo[CYBLE_MYCUSTOMSERVICE_MYCUSTOMCHARACTERISTIC_CHAR_INDEX].customServCharHandle)
+                cyBle_customs[CYBLE_LEDSERVICE_SERVICE_INDEX].\
+                customServInfo[CYBLE_LEDSERVICE_LEDSTATE_CHAR_INDEX].customServCharHandle)
             {
-                    CyBle_GattsWriteAttributeValue(&wrCmdReqParam->handleValPair, 0, &cyBle_connHandle, CYBLE_GATT_DB_PEER_INITIATED); 
+                CyBle_GattsWriteAttributeValue(&wrCmdReqParam->handleValPair, 0, &cyBle_connHandle, CYBLE_GATT_DB_PEER_INITIATED); 
+                LED_PIN_Write(*wrCmdReqParam->handleValPair.value.val);    
             }
             break;
                 
