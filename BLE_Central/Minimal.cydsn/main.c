@@ -41,7 +41,7 @@ int main()
     while(connHandle.bdHandle == 0) /* Wait for connection to GATT server */
         CyBle_ProcessEvents();
 
-    writeData = 0xAA;
+    writeData = 0x01; /* A value of 1 will turn on LED on Minimal_Peripheral dongle*/
     writeValue.val = &writeData;
     writeValue.len = sizeof(writeData);
     writeValue.actualLen = sizeof(writeData);
