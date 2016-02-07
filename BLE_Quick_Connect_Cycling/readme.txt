@@ -1,0 +1,3 @@
+An example of how to quickly connect, transfer data and then disconnect. This can be useful when a GATT Client needs to access multiple GATT Servers and can't remain in a connected state. One example would be if the GATT Client was the hub in a star network topology. The GATT Client is the GAP Peripheral in this example. The reason is to allow the GATT Client to initiate the connection to a certain server by using directed advertising. This avoids multiple GATT Servers having to advertise.
+
+CY8CKIT-042-BLE was used as HW for this example. The Client_Peripheral project runs on the dongle or the PRoC BLE module. The Server_Central project runs on the PSoC 4 BLE module.
