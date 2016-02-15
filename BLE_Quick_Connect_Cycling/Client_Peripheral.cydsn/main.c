@@ -3,7 +3,7 @@
 //#define DEBUGPRINTS
 #include <debug.h>
 
-CYBLE_GAP_BD_ADDR_T	connectCentralDevice = {{0x56, 0x34, 0x12, 0x50, 0xa0, 0x00}, 0};
+CYBLE_GAP_BD_ADDR_T	connectCentralDevice[2] = { {{0x56, 0x34, 0x12, 0x50, 0xa0, 0x00}, 0}, {{0x57, 0x34, 0x12, 0x50, 0xa0, 0x00}, 0} };
 
 CYBLE_CONN_HANDLE_T connHandle = {0, 0};
 uint8 gatt_disconnect_flag = 0;
@@ -12,6 +12,7 @@ CYBLE_GATTC_WRITE_REQ_T writeReqParam;
 CYBLE_GATT_VALUE_T writeValue;
 uint8 counter = 0;
 uint8 last_written_counter = 0;
+uint8 last_last_written_counter = 0;
 
 CYBLE_GATTC_READ_MULT_REQ_T readMultiReqParam;
 uint16 handles[] = {0x0c, 0x0e, 0x10};
@@ -49,10 +50,10 @@ void GenericAppEventHandler(uint32 event, void *eventParam)
             {
                 CYBLE_GATTC_READ_RSP_PARAM_T *rsp = (CYBLE_GATTC_READ_RSP_PARAM_T *)eventParam;
                 /* Data integrity check */
-                if ( (last_written_counter > 0) && \
-                        (   rsp->value.val[2] != last_written_counter || \
-                            rsp->value.val[1] != last_written_counter || \
-                            rsp->value.val[0] != (uint8)(last_written_counter - 15)) )
+                if ( (last_last_written_counter > 0) && \
+                        (   rsp->value.val[2] != last_last_written_counter || \
+                            rsp->value.val[1] != last_last_written_counter || \
+                            rsp->value.val[0] != (uint8)(last_last_written_counter - 15)) )
                     printf("ERROR: Characteristic value mismatch.\r\n");
             }
             break;
@@ -61,6 +62,7 @@ void GenericAppEventHandler(uint32 event, void *eventParam)
 
 int main()
 {
+    uint i = 0;
     writeValue.val = (uint8 *)&counter;
     writeValue.len = sizeof(counter);
     writeValue.actualLen = sizeof(counter);
@@ -74,18 +76,28 @@ int main()
     UART_Start();
 	CyGlobalIntEnable;
 
-    /* Configure advertising parameters for directed advertising */
-    memcpy(cyBle_discoveryModeInfo.advParam->directAddr, connectCentralDevice.bdAddr, CYBLE_GAP_BD_ADDR_SIZE);
-    cyBle_discoveryModeInfo.advParam->directAddrType = connectCentralDevice.type;   
-    cyBle_discoveryModeInfo.advParam->advType = CYBLE_GAPP_CONNECTABLE_HIGH_DC_DIRECTED_ADV;
-
     printf("\r\nINFO: Starting GATT Client on GAP Peripheral\r\n");
     CyBle_Start(GenericAppEventHandler);
     CyBle_ProcessEvents();
     
     for(;;)
     {
-        printf(".");
+        if (i == 0)
+        {
+            i = 1;
+            printf("1");
+        }
+        else
+        {
+            i = 0;
+            printf("0");
+        }
+            
+        /* Configure advertising parameters for directed advertising */
+        memcpy(cyBle_discoveryModeInfo.advParam->directAddr, connectCentralDevice[i].bdAddr, CYBLE_GAP_BD_ADDR_SIZE);
+        cyBle_discoveryModeInfo.advParam->directAddrType = connectCentralDevice[i].type;   
+        cyBle_discoveryModeInfo.advParam->advType = CYBLE_GAPP_CONNECTABLE_HIGH_DC_DIRECTED_ADV;
+
         debug_print("INFO: Start advertising\r\n");
         CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_CUSTOM);
         while (connHandle.bdHandle == 0) /* Wait for connection to GATT server */
@@ -93,6 +105,7 @@ int main()
 
         debug_print("INFO: Connected to GATT Server\r\n");
         P1_0_Write(1);
+        last_last_written_counter = last_written_counter;
         last_written_counter = counter;
         debug_print("INFO: Read multiple characteristics\r\n");
         CyBle_GattcReadMultipleCharacteristicValues(connHandle, &readMultiReqParam);
