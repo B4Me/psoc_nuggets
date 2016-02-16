@@ -1,6 +1,6 @@
 #include <project.h>
 
-//#define DEBUGPRINTS
+#define DEBUGPRINTS
 #include <debug.h>
 
 #define FALSE 0

@@ -1,6 +1,6 @@
 #include <project.h>
 
-//#define DEBUGPRINTS
+#define DEBUGPRINTS
 #include <debug.h>
 
 CYBLE_GAP_BD_ADDR_T	connectCentralDevice = {{0x56, 0x34, 0x12, 0x50, 0xa0, 0x00}, 0};
