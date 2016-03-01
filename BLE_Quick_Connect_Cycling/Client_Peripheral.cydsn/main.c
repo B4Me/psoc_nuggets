@@ -1,7 +1,5 @@
 #include <project.h>
-
-//#define DEBUGPRINTS
-#include <debug.h>
+#include <hkj_library.h>
 
 CYBLE_GAP_BD_ADDR_T	connectCentralDevice = {{0x56, 0x34, 0x12, 0x50, 0xa0, 0x00}, 0};
 
@@ -18,12 +16,7 @@ uint16 handles[] = {0x0c, 0x0e, 0x10};
 
 void GenericAppEventHandler(uint32 event, void *eventParam)
 {
-    const char *event_name = hkj_GetEventName(event);
-    if (event_name)
-        debug_print("EVENT: %s\r\n", event_name);
-    else
-        debug_print("EVENT: UNKNOWN (%lu)\r\n", event);
-	
+    hkj_ble_events_log_add(event, eventParam);
     switch(event)
 	{
         case CYBLE_EVT_GAPP_ADVERTISEMENT_START_STOP:
@@ -32,7 +25,6 @@ void GenericAppEventHandler(uint32 event, void *eventParam)
             break;
 
         case CYBLE_EVT_TIMEOUT:
-            printf("ERROR: CYBLE_EVT_TIMEOUT\r\n");
             break;                
 
         case CYBLE_EVT_GATT_CONNECT_IND:
@@ -72,21 +64,23 @@ int main()
     readMultiReqParam.listCount = sizeof(handles) / sizeof(handles[0]);
     
     UART_Start();
+    hkj_debug_init();
+    hkj_ble_events_log_init();
 	CyGlobalIntEnable;
+    debug_print("\r\nINFO: Starting GATT Client on GAP Peripheral\r\n");
 
     /* Configure advertising parameters for directed advertising */
     memcpy(cyBle_discoveryModeInfo.advParam->directAddr, connectCentralDevice.bdAddr, CYBLE_GAP_BD_ADDR_SIZE);
     cyBle_discoveryModeInfo.advParam->directAddrType = connectCentralDevice.type;   
     cyBle_discoveryModeInfo.advParam->advType = CYBLE_GAPP_CONNECTABLE_HIGH_DC_DIRECTED_ADV;
 
-    printf("\r\nINFO: Starting GATT Client on GAP Peripheral\r\n");
     CyBle_Start(GenericAppEventHandler);
     CyBle_ProcessEvents();
     
     for(;;)
     {
-        printf(".");
         debug_print("INFO: Start advertising\r\n");
+        hkj_ble_events_log_clear();
         CyBle_GappStartAdvertisement(CYBLE_ADVERTISING_CUSTOM);
         while (connHandle.bdHandle == 0) /* Wait for connection to GATT server */
             CyBle_ProcessEvents();
@@ -109,5 +103,7 @@ int main()
 
         P1_0_Write(0);
         debug_print("INFO: Disconnected from GATT Server\r\n");
+       
+        hkj_ble_events_log_debug_print();
 	}
 }

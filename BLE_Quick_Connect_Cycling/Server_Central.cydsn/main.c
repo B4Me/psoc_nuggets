@@ -1,10 +1,5 @@
 #include <project.h>
-
-//#define DEBUGPRINTS
-#include <debug.h>
-
-#define FALSE 0
-#define TRUE 1
+#include <hkj_library.h>
 
 CYBLE_GAP_BD_ADDR_T	connectPeriphDevice = {{0x25, 0x43, 0x65, 0x50, 0xa0, 0x00}, 0};
 uint8 shouldConnect = TRUE;
@@ -14,12 +9,7 @@ void ApplicationEventHandler(uint32 event, void *eventparam)
 {
     CYBLE_GATTS_WRITE_CMD_REQ_PARAM_T *wrCmdReqParam;
 
-    const char *event_name = hkj_GetEventName(event);
-    if (event_name)
-        debug_print("EVENT: %s\r\n", event_name);
-    else
-        debug_print("EVENT: UNKNOWN (%lu)\r\n", event);
-	
+    hkj_ble_events_log_add(event, eventparam);
 	switch(event)
 	{
 		case CYBLE_EVT_GAP_DEVICE_DISCONNECTED:
@@ -50,9 +40,11 @@ void ApplicationEventHandler(uint32 event, void *eventparam)
 int main()
 {
     UART_Start();
-    printf("\r\nINFO: Starting GATT Server on GAP Central\r\n");
+    hkj_debug_init();
+    hkj_ble_events_log_init();
+    CyGlobalIntEnable; 
+    debug_print("\r\nINFO: Starting GATT Server on GAP Central\r\n");
 
-	CyGlobalIntEnable; 
 	CyBle_Start(ApplicationEventHandler);	
 	
     for(;;)
@@ -60,9 +52,11 @@ int main()
         CyBle_ProcessEvents();
   		if(shouldConnect)
 		{
+            hkj_ble_events_log_debug_print();
             debug_print("INFO: Trying to connect - CyBle_GapcConnectDevice\r\n");
 			CyBle_GapcConnectDevice(&connectPeriphDevice);
             shouldConnect = FALSE; /* Avoid duplicate connect API calls */
+            hkj_ble_events_log_clear();
         }
     }
 }

@@ -9,12 +9,16 @@
 <projects>
 <v>.\Client_Peripheral.cydsn\Client_Peripheral.cyprj</v>
 <v>.\Server_Central.cydsn\Server_Central.cyprj</v>
+<v>..\hkj_library.cylib\hkj_library.cyprj</v>
 </projects>
 <workspace_id v="7fac2cac-cacc-4685-9e62-cb43cb515d7e" />
 <WriteAppVersionLastSavedWith v="3.3.0.7343" />
 <WriteAppMarketingVersionLastSavedWith v="3.3 SP1" />
 <CyGuid_dcbd9771-0334-43dc-9cc3-fe99dc3c5316 type_name="CyDesigner.Common.ProjMgmt.Model.CyPrjDependencyList" version="4">
-<wrkspc_dependencies />
+<wrkspc_dependencies>
+<wrkspc_dependency project="Client_Peripheral.cydsn\Client_Peripheral.cyprj" dependency="..\hkj_library.cylib\hkj_library.cyprj" />
+<wrkspc_dependency project="Server_Central.cydsn\Server_Central.cyprj" dependency="..\hkj_library.cylib\hkj_library.cyprj" />
+</wrkspc_dependencies>
 </CyGuid_dcbd9771-0334-43dc-9cc3-fe99dc3c5316>
 <CyGuid_63b68103-67f5-4406-8da6-5c8625765b82 type_name="CyDesigner.Common.ProjMgmt.Model.CyIgnoredSystemDepsList" version="1">
 <wrkspc_dependencies />
