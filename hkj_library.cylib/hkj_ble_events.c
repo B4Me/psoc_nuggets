@@ -579,9 +579,9 @@ void hkj_ble_events_log_debug_print(void)
     {
         const char *event_name = hkj_ble_events_get_name(eventlog[i].event);
         if (event_name)
-            printf("EVENT @ %lu ms: %s\r\n", eventlog[i].time, event_name);
+            debug_print("EVENT @ %lu ms: %s\r\n", eventlog[i].time, event_name);
         else
-            printf("EVENT @ %lu ms: UNKNOWN (%lu)\r\n", eventlog[i].time, eventlog[i].event);
+            debug_print("EVENT @ %lu ms: UNKNOWN (%lu)\r\n", eventlog[i].time, eventlog[i].event);
     }
     if (eventlog_index == MAX_LOGGED_EVENTS)
         printf("EVENT @ ?? ms: EVENT LOG FULL!\r\n");
