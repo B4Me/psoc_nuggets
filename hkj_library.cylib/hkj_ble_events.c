@@ -585,4 +585,5 @@ void hkj_ble_events_log_debug_print(void)
     }
     if (eventlog_index == MAX_LOGGED_EVENTS)
         printf("EVENT @ ?? ms: EVENT LOG FULL!\r\n");
+    eventlog_index = 0;
 }

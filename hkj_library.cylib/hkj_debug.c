@@ -19,5 +19,6 @@ int _write(int file, char *ptr, int len)
 void hkj_debug_init(void)
 {
     _write(0, 0, 0); /* Dummy call to force linking of own _write() */
+    hkj_ble_events_log_init();
 }
 
