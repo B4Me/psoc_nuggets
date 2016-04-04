@@ -26,3 +26,5 @@ Channel 2 (Blue) = P5.0 on Central, Radio Tx from GATT Client (connection events
 Channel 3 (Purple) = P3.3 on Central, GATT API write call start
 Channel 4 (Green) = P5.0 on Peripheral, Radio Tx (ack) from GATT Server
 
+The oscilloscope plots are now available with annotations in:
+oscilloscope_photos_from_HKJ_2016-03-11_collaged_by_CHRID.*  
