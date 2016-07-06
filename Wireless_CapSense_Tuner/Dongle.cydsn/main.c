@@ -177,6 +177,8 @@ static void onTargetDisconnect()
     targetConnected = 0;
     BLUE_LED_Write(0);
     I2C_Stop();
+    I2C_I2CSlaveClearReadStatus();
+    I2C_I2CSlaveClearWriteStatus();
 }
 
 void BleEventHandler(uint32 event, void *eventParam)
